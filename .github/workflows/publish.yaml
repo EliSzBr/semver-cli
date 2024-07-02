@@ -26,6 +26,9 @@ jobs:
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           release_branches: master,main
+      - name: fetch newly created tag
+        run: |
+          git fetch --depth=1 origin +refs/tags/${{ steps.github-tag-action.outputs.new_tag }}
 
       - name: Set up Go
         uses: actions/setup-go@v5
