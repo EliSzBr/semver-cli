@@ -1,0 +1,42 @@
+name: goreleaser
+
+on:
+  pull_request:
+  push:
+    branches:
+      - master
+      - main
+      - checkrelease
+
+permissions:
+  contents: write
+
+jobs:
+  goreleaser:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Bump version and push tag
+        if: ${{ github.ref == 'refs/heads/master' || github.ref == 'master' || github.ref == 'refs/heads/main' || github.ref == 'main' }}
+        id: github-tag-action
+        uses: mathieudutour/github-tag-action@v6.1
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          release_branches: master,main
+
+      - name: Set up Go
+        uses: actions/setup-go@v5
+      
+      - name: Run GoReleaser
+        uses: goreleaser/goreleaser-action@v6
+        with:
+          # either 'goreleaser' (default) or 'goreleaser-pro'
+          distribution: goreleaser
+          # 'latest', 'nightly', or a semver
+          version: '~> v2'
+          args: release --clean
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
