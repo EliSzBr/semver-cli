@@ -6,7 +6,6 @@ on:
     branches:
       - master
       - main
-      - checkrelease
 
 permissions:
   contents: write
@@ -20,7 +19,7 @@ jobs:
         with:
           fetch-depth: 0
       - name: Bump version and push tag
-        # if: ${{ github.ref == 'refs/heads/master' || github.ref == 'master' || github.ref == 'refs/heads/main' || github.ref == 'main' }}
+        if: ${{ github.ref == 'refs/heads/master' || github.ref == 'master' || github.ref == 'refs/heads/main' || github.ref == 'main' }}
         id: github-tag-action
         uses: mathieudutour/github-tag-action@v6.1
         with:
